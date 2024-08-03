@@ -10,7 +10,40 @@ bool flag[2];
 int turn=-1;
 int empty=n;
 int full=0,mutex=1;
-
+int wrt=1,readCnt=0;
+int MAX_READERS=10;
+void read(){
+   do{
+    //   readCnt++;
+    //   if(readCnt==1){
+    //       wait(wrt);
+    //   }
+    //   ///reading
+    //   readCnt--;
+    //   if(readCnt==0){
+    //       signal(wrt);
+    //   }
+    wait(MAX_READERS);
+    if(readCnt==0){
+        wait(wrt);
+    }
+    readCnt++;
+    //reading;
+    signal(MAX_READERS);
+    readCnt--;
+    if(readCnt==0){
+        signal(wrt);
+    }
+   }while(true);
+}
+void write()
+{
+    do{
+       wait(wrt);
+       //write operation
+       signal(write);
+   }while(true);
+}
 void producer(){
     wait(empty);
     wait(mutex);
